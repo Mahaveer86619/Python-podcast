@@ -60,11 +60,6 @@ def generate_audio():
     if not combined_audio:
         return jsonify({"error": "Failed to combine audio"}), 500
 
-    return jsonify({"message": "Audio generated successfully."}), 200
-
-
-@app.route('/download_audio', methods=['GET'])
-def download_audio():
     audio_file = os.path.join(AUDIO_DIR, "combined_podcast.mp3")
     if not os.path.exists(audio_file):
         return jsonify({"error": "Audio file not found"}), 404
@@ -72,23 +67,9 @@ def download_audio():
     return send_file(audio_file, as_attachment=True)
 
 
-@app.route('/stream_audio', methods=['POST'])
-def stream_audio():
-    data = request.get_json()
-    conversation = data.get('conversation')
-    host_voice = data.get('host_voice')
-    expert_voice = data.get('expert_voice')
-
-    def generate_audio_stream():
-        for i, message in enumerate(conversation):
-            voice_id = host_voice if message['speaker'] == 'Host' else expert_voice
-            output_filename = os.path.join(AUDIO_DIR, f"message_stream_{i}.mp3")
-            audio_path = tts_handler.generate_audio(message['text'], voice_id, output_filename)
-            if audio_path:
-                with open(audio_path, 'rb') as audio_file:
-                    yield audio_file.read()
-
-    return Response(generate_audio_stream(), content_type='audio/mpeg')
+@app.route('/test', methods=['GET'])
+def test():
+    return jsonify({"message": "Test successful."}), 200
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=False)

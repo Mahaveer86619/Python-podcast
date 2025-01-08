@@ -62,7 +62,7 @@ class TTSHandler:
             input_args = [ffmpeg.input(f) for f in normalized_files]
             ffmpeg.concat(*input_args, v=0, a=1).output(output_path).run()
             print(f"Successfully combined audio files into: {output_path}")
-            return None
+            return output_path
         except ffmpeg.Error as e:
             print(f"Error combining audio files: {e.stderr.decode() if hasattr(e, 'stderr') else str(e)}")
             return None

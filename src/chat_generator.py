@@ -6,9 +6,6 @@ class ChatMessage(TypedDict):
     speaker: str 
     text: str 
 
-class ChatConversation(TypedDict):
-    messages: list[ChatMessage]
-
 genai.configure(api_key=GEMINI_API_KEY)
 
 def generate_podcast_script(pdf_path):
@@ -57,13 +54,33 @@ Use the following to make the conversation more engaging:
                 max_output_tokens=1000,
                 temperature=0.1,
                 response_mime_type="application/json", 
-                response_schema=ChatConversation
+                response_schema=list[ChatMessage]
             )
         )
             
         # Return the conversation as a JSON response
-        return response.text.strip()
+        return clean_and_parse_json(response.text.strip())
 
     except Exception as e:
         print(f"Error generating conversation: {e}")
         return None
+
+def clean_and_parse_json(json_str: str) -> list[ChatMessage]:
+  """
+  Cleans and parses a JSON string containing a list of ChatMessages.
+
+  Args:
+    json_str: The JSON string to clean and parse.
+
+  Returns:
+    A list of ChatMessage objects.
+  """
+
+  # Parse the cleaned JSON string
+  try:
+    chat_messages = eval(json_str) 
+  except Exception as e:
+    print(f"Error parsing JSON: {e}")
+    return [] 
+
+  return chat_messages

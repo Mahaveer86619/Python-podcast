@@ -1,6 +1,7 @@
-flask==2.1.1
-requests==2.26.0
-openai==0.11.1
-pydub==0.25.1
-PyPDF2==1.26.0
-deepgram-sdk==2.*
+flask>=2.3.0
+werkzeug>=2.3.0
+requests>=2.26.0
+deepgram-sdk>=3.*
+pdfplumber>=0.5.28
+google-generativeai>=0.8.3
+ffmpeg-python>=0.2.0
